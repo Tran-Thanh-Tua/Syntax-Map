@@ -14,3 +14,21 @@ canvas {
   font-size:18px;
   font-weight:bold;
 }
+.layout { display: flex; height: 100vh; }
+.sidebar {
+  width: 220px;
+  background: #fff;
+  border-right: 2px solid #333;
+  padding: 12px;
+  text-align: left;
+}
+#busList { list-style: none; padding: 0; }
+#busList li {
+  padding: 8px;
+  border: 1px solid #333;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  cursor: pointer;
+}
+#busList li:hover { font-weight:bold; }
+.main { flex: 1; }
