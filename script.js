@@ -1,4 +1,6 @@
-// -------- DỮ LIỆU ĐỒ THỊ --------
+console.log("✅ script.js đã chạy");
+
+// -------- ĐỒ THỊ VÔ HƯỚNG + TRỌNG SỐ HỢP LỆ --------
 const graph = {
   "T01":[{to:"T02",w:6}],
   "T02":[{to:"T01",w:6},{to:"T04",w:4},{to:"T03",w:5},{to:"T05",w:8}],
@@ -7,13 +9,14 @@ const graph = {
   "T05":[{to:"T02",w:8},{to:"T04",w:3}]
 };
 
+// -------- 3 TUYẾN BUS (đáp ứng 2 chiều tự động) --------
 const busRoutes = {
   1:["T01","T02","T04"],
   2:["T03","T02","T05"],
   3:["T04","T05","T02"]
 };
 
-// -------- VỊ TRÍ VẼ NODES TRÊN CANVAS --------
+// -------- VỊ TRÍ CỐ ĐỊNH VẼ NODES --------
 const positions = {
   "T01":{x:100,y:200},
   "T02":{x:350,y:80},
@@ -26,7 +29,7 @@ const canvas = document.getElementById("graphCanvas");
 const ctx = canvas.getContext("2d");
 let selected=[];
 
-// -------- MIN-HEAP (Priority Queue) --------
+// -------- HÀNG ĐỢI ƯU TIÊN BẰNG MIN HEAP --------
 class MinHeap {
   constructor(){ this.h=[]; }
   push(node,dist){
@@ -40,6 +43,7 @@ class MinHeap {
     }
   }
   pop(){
+    if(this.h.length===0) return null;
     const top=this.h[0];
     const end=this.h.pop();
     if(this.h.length>0){
@@ -59,7 +63,7 @@ class MinHeap {
   isEmpty(){return this.h.length===0;}
 }
 
-// -------- DIJKSTRA --------
+// -------- DIJKSTRA TRẢ VỀ PATH + TỔNG TRỌNG SỐ --------
 function dijkstra(start,end){
   const dist={}, prev={};
   for(let v in graph) dist[v]=Infinity;
@@ -68,136 +72,135 @@ function dijkstra(start,end){
   heap.push(start,0);
 
   while(!heap.isEmpty()){
-    const {node,dist:d}=heap.pop();
-    if(d>dist[node])continue;
-    if(node===end)break;
-    for(let e of graph[node]){
-      const nd=d+e.w;
-      if(nd<dist[e.to]){
-        dist[e.to]=nd;
-        prev[e.to]=node;
-        heap.push(e.to,nd);
+    const item = heap.pop();
+    if(!item) break;
+    const u = item.node;
+    const d = item.dist;
+    if(d > dist[u]) continue;
+    if(u === end) break;
+    for(let e of graph[u]){
+      const v = e.to;
+      const nd = dist[u] + e.w;
+      if(nd < dist[v]){
+        dist[v] = nd;
+        prev[v] = u;
+        heap.push(v, nd);
       }
     }
   }
-  // truy vết path
+  if(dist[end] === Infinity) return null;
   let path=[], cur=end;
-  if(dist[cur]===Infinity) return null;
   while(cur){ path.push(cur); cur=prev[cur]; }
   return {path:path.reverse(),distance:dist[end]};
 }
 
-// -------- TÌM ROUTE COVER + GHÉP TUYẾN --------
+// -------- HÀM GỢI Ý TUYẾN BUS KHÔNG CRASH --------
 function recommend(path){
-  if(!path)return "Không có đường đi khả thi";
-  const trip=[];
-  let i=0;
-  while(i<path.length){
-    let bestBus=null, bestLen=0;
-    for(let bus in busRoutes){
-      const r=busRoutes[bus];
-      for(let j=i;j<path.length;j++){
-        const sub=path.slice(i,j+1);
-        let ok=true;
-        for(let k=0;k<sub.length-1;k++){
-          const a=sub[k], b=sub[k+1];
-          const ia=r.indexOf(a), ib=r.indexOf(b);
-          if(ia===-1||ib===-1||Math.abs(ia-ib)!==1){ ok=false; break; }
+  if(!path || path.length < 2) return "⚠ Không đủ dữ liệu để gợi ý";
+
+  const segs = [];
+  let i = 0;
+  while(i < path.length){
+    let found = false;
+    for(let busKey in busRoutes){
+      const route = busRoutes[busKey];
+      for(let j = i+1; j < path.length; j++){
+        const sub = path.slice(i, j+1);
+        let ok = true;
+        for(let k=0; k < sub.length-1; k++){
+          const a = sub[k], b = sub[k+1];
+          const ia = route.indexOf(a), ib = route.indexOf(b);
+          if(ia === -1 || ib === -1 || Math.abs(ia - ib) !== 1){
+            ok = false;
+            break;
+          }
         }
-        if(ok && sub.length>bestLen){
-          bestBus=bus;
-          bestLen=sub.length;
+        if(ok){
+          segs.push({bus: Number(busKey), from:sub[0], to:sub.at(-1)});
+          i = j;
+          found = true;
+          foundBreak = true;
+          break;
         }
       }
+      if(found) break;
     }
-    if(!bestBus){
-      i++;
-    } else {
-      const sub=path.slice(i,i+bestLen);
-      trip.push({bus:parseInt(bestBus),from:sub[0],to:sub.at(-1)});
-      i+=bestLen-1;
-    }
+    if(!found) i++;
   }
-  if(trip.length===0) return "Không tuyến bus nào cover được đường đi";
-  let text="Bạn nên đi:\n";
-  for(let t of trip){
-    text+=`- Tuyến ${t.bus}: ${t.from} → ${t.to}\n`;
+
+  if(segs.length === 0) return "⚠ Không có tuyến bus nào phù hợp";
+
+  let text="🚌 Gợi ý tuyến xe:<br/>";
+  for(let s of segs){
+    text += `- Tuyến ${s.bus}: ${s.from} → ${s.to}<br/>`;
   }
-  return text.replace(/\n/g,"<br/>");
+  return text;
 }
 
-// -------- VẼ ĐỒ THỊ --------
-function drawGraph(highlight=[]){
+// -------- VẼ GRAPH CHẮC CHẮN CHẠY --------
+function drawGraph(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.lineWidth=1;
-  // vẽ cạnh
   ctx.beginPath();
   for(let u in graph){
     for(let e of graph[u]){
-      const v=e.to;
-      if(positions[u]&&positions[v]){
-        ctx.moveTo(positions[u].x,positions[u].y);
-        ctx.lineTo(positions[v].x,positions[v].y);
+      const v = e.to;
+      if(positions[u] && positions[v]){
+        ctx.moveTo(positions[u].x, positions[u].y);
+        ctx.lineTo(positions[v].x, positions[v].y);
       }
     }
   }
   ctx.stroke();
 
-  // highlight thuộc tuyến bus đã được chọn
-  ctx.lineWidth=4;
-  for(let seg of highlight){
-    const {bus,from,to}=seg;
-    const r=busRoutes[bus];
-    const i1=r.indexOf(from), i2=r.indexOf(to);
-    if(i1!==-1&&i2!==-1){
-      const step=(i2>i1)?1:-1;
-      let k=i1;
-      while(k!==i2){
-        const a=r[k], b=r[k+step];
-        ctx.beginPath();
-        ctx.moveTo(positions[a].x,positions[a].y);
-        ctx.lineTo(positions[b].x,positions[b].y);
-        ctx.stroke();
-        k+=step;
-      }
-    }
-  }
-
-  // vẽ nodes
   for(let v in positions){
     ctx.beginPath();
-    ctx.arc(positions[v].x,positions[v].y,22,0,Math.PI*2);
+    ctx.arc(positions[v].x, positions[v].y, 20, 0, Math.PI*2);
     ctx.fillStyle="white";
     ctx.fill();
-    ctx.strokeStyle="#000";
     ctx.stroke();
-    ctx.fillStyle="#000";
-    ctx.font="14px Arial";
+    ctx.fillStyle="black";
     ctx.fillText(v, positions[v].x-15, positions[v].y+5);
   }
 }
 
 drawGraph();
 
-// -------- CLICK CHỌN ĐỈNH --------
+function highlightRoute(busId){
+  const route = busRoutes[busId];
+  if(!route) return;
+
+  // vẽ lại graph nền
+  drawGraph();
+
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+
+  // vẽ từng cạnh liên tiếp trong tuyến
+  for(let i = 0; i < route.length - 1; i++){
+    const a = route[i], b = route[i+1];
+    const pa = positions[a], pb = positions[b];
+    if(pa && pb){
+      ctx.moveTo(pa.x, pa.y);
+      ctx.lineTo(pb.x, pb.y);
+    }
+  }
+  ctx.stroke();
+}
+
+// -------- CLICK CHỌN 2 ĐỈNH TRÊN CANVAS --------
 canvas.addEventListener("click",evt=>{
-  const r=canvas.getBoundingClientRect();
-  const mx=evt.clientX-r.left, my=evt.clientY-r.top;
+  const r = canvas.getBoundingClientRect();
+  const mx = evt.clientX - r.left;
+  const my = evt.clientY - r.top;
   for(let v in positions){
-    const {x,y}=positions[v];
-    if(Math.hypot(mx-x,my-y)<=22){
+    const {x,y} = positions[v];
+    if(Math.hypot(mx-x, my-y) <= 20){
       selected.push(v);
-      ctx.beginPath();
-      ctx.arc(x,y,24,0,Math.PI*2);
-      ctx.lineWidth=3;
-      ctx.stroke();
-      if(selected.length===2){
-        const {path,distance}=dijkstra(selected[0],selected[1])||{};
-        const rec=recommend(path);
-        document.getElementById("result").innerHTML=
-          `🚏 ${selected[0]} → ${selected[1]}<br/>`+
-          `📍 Path: ${path?path.join(" → "):"Không tìm được"}<br/>`+
-          `📏 Distance: ${distance??"-"}<br/><br/>🚌 ${rec}`;
+      if(selected.length === 2){
+        const d = dijkstra(selected[0], selected[1]);
+        document.getElementById("result").innerHTML =
+           d ? `📏 Đường đi: ${d.path.join(" → ")} (tổng dài: ${d.distance})<br/><br/>${recommend(d.path)}`
+             : "❌ Không tìm được đường!";
         selected=[];
         drawGraph();
       }
@@ -205,3 +208,12 @@ canvas.addEventListener("click",evt=>{
     }
   }
 });
+
+// tạo list tuyến bên trái
+const busList = document.getElementById("busList");
+for(let busId in busRoutes){
+  const li = document.createElement("li");
+  li.textContent = `Tuyến ${busId}: ` + busRoutes[busId].join(" - ");
+  li.onclick = () => highlightRoute(busId);
+  busList.appendChild(li);
+}
