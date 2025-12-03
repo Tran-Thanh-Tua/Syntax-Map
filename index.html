@@ -3,13 +3,23 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Bus Demo</title>
+  <title>Bus Dijkstra Demo</title>
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-<h2>Click chọn 2 trạm trên đồ thị</h2>
-<canvas id="graphCanvas" width="700" height="450"></canvas>
-<div id="result"></div>
-<script src="script.js"></script>
+  <div class="layout">
+    <div class="sidebar">
+      <h3>🚌 Các tuyến xe</h3>
+      <ul id="busList"></ul>
+      <button style="width: 150px; height: 50px;" onclick="window.location.reload();">Reset</button>
+    </div>
+
+    <div class="main">
+      <h2>Click chọn 2 trạm trên đồ thị</h2>
+      <canvas id="graphCanvas" width="700" height="450"></canvas>
+      <div id="result"></div>
+    </div>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>
