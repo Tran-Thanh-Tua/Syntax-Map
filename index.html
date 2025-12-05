@@ -1,25 +1,35 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Bus Dijkstra Demo</title>
-  <link rel="stylesheet" href="style.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Syntax Map</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="layout">
-    <div class="sidebar">
-      <h3>🚌 Các tuyến xe</h3>
-      <ul id="busList"></ul>
-      <button style="width: 150px; height: 50px;" onclick="window.location.reload();">Reset</button>
+  <aside id="sidebar">
+    <h1>🚌 Tra cứu tuyến</h1>
+    <ul id="busList"></ul>
+    <div class="controls">
+      <button id="resetBtn">🔄 Reset</button>
+    </div>
+  </aside>
+
+<main id="main">
+
+    <div id="graphContainer">
+        <canvas id="graphCanvas" width="860" height="560"></canvas>     <!--chinh size ban do-->
     </div>
 
-    <div class="main">
-      <h2>Click chọn 2 trạm trên đồ thị</h2>
-      <canvas id="graphCanvas" width="700" height="450"></canvas>
-      <div id="result"></div>
+    <!-- Khung hien goi y -->
+    <div id="infoPanel">
+        <h3 id="shortestPath">1. Nhập vị trí hiện tại của bạn</h3>
+        <h3 id="busSuggestTitle" style="margin-top:10px;">2. Nhập vị trí bạn muốn đến</h3>
+        <ul id="busSuggest"></ul>
     </div>
-  </div>
+
+</main>
+
   <script src="script.js"></script>
 </body>
 </html>
