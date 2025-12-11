@@ -46,80 +46,80 @@ function addEdge(a, b, w) {
 for (let bus in busRoutes) {
     const r = busRoutes[bus];
     // vertical edges row1→row2
-    addEdge("S01", "S07", 18);
+    addEdge("S01", "S07", 3);
     addEdge("S02", "S08", 5);
     addEdge("S03", "S09", 3);
     addEdge("S04", "S10", 9);
     addEdge("S05", "S11", 9);
-    addEdge("S06", "S12", 10);
+    addEdge("S06", "S12", 8);
 
     // row2→row3
     addEdge("S07", "S13", 7);
-    addEdge("S08", "S14", 13);
-    addEdge("S09", "S15", 15);
-    addEdge("S10", "S16", 20);
-    addEdge("S11", "S17", 20);
-    addEdge("S12", "S18", 15);
+    addEdge("S08", "S14", 3);
+    addEdge("S09", "S15", 5);
+    addEdge("S10", "S16", 2);
+    addEdge("S11", "S17", 1);
+    addEdge("S12", "S18", 5);
 
     // row3→row4
     addEdge("S13", "S19", 8);
-    addEdge("S14", "S20", 16);
+    addEdge("S14", "S20", 6);
     addEdge("S17", "S23", 2);
     addEdge("S18", "S24", 4);
 
     // row4→row5
-    addEdge("S20", "S26", 2);
-    addEdge("S21", "S27", 13);
+    addEdge("S20", "S26", 4);
+    addEdge("S21", "S27", 3);
     addEdge("S22", "S28", 8);
-    addEdge("S23", "S29", 17);
+    addEdge("S23", "S29", 7);
     addEdge("S24", "S30", 8);
 
 
     // horizontal rows
     // row 1
-    addEdge("S02", "S03", 20);
+    addEdge("S02", "S03", 7);
     addEdge("S03", "S04", 5);
-    addEdge("S04", "S05", 20);
+    addEdge("S04", "S05", 8);
 
     // row 2
-    addEdge("S08", "S09", 17);
+    addEdge("S08", "S09", 7);
     addEdge("S09", "S10", 4);
-    addEdge("S10", "S11", 16);
-    addEdge("S11", "S12", 10);
+    addEdge("S10", "S11", 6);
+    addEdge("S11", "S12", 3);
 
     // row 3
-    addEdge("S13", "S14", 12);
-    addEdge("S14", "S15", 15);
-    addEdge("S15", "S16", 14);
-    addEdge("S17", "S18", 12);
+    addEdge("S13", "S14", 4);
+    addEdge("S14", "S15", 5);
+    addEdge("S15", "S16", 2);
+    addEdge("S17", "S18", 2);
 
     // row 4
-    addEdge("S19", "S20", 12);
-    addEdge("S20", "S21", 13);
+    addEdge("S19", "S20", 2);
+    addEdge("S20", "S21", 3);
     addEdge("S21", "S22", 8);
-    addEdge("S22", "S23", 19);
+    addEdge("S22", "S23", 9);
     addEdge("S23", "S24", 7);
 
     // row 5
-    addEdge("S25", "S26", 20);
-    addEdge("S26", "S27", 12);
+    addEdge("S25", "S26", 2);
+    addEdge("S26", "S27", 1);
     addEdge("S27", "S28", 8);
-    addEdge("S28", "S29", 26);
-    addEdge("S29", "S30", 2);
+    addEdge("S28", "S29", 6);
+    addEdge("S29", "S30", 5);
 }
 const buildings = [
     { name: "Bệnh viện Quận 7", icon: "🏥", x: 330, y: 140 },
     { name: "Trường THPT Nguyễn Trãi", icon: "🏫", x: 510, y: 325 },
     { name: "Ngân hàng ACB", icon: "🏦", x: 60, y: 350 },
     { name: "Tòa nhà Văn phòng CityView", icon: "🏢", x: 380, y: 450 },
-    { name: "Nhà máy KCN Tân Thuận", icon: "🏭", x: 620, y: 230 },
+    { name: "Trạm Cứu hỏa Quận 7", icon: "🚒", x: 620, y: 230 },
     { name: "Siêu thị BigMart", icon: "🛒", x: 685, y: 340 },
     { name: "Sân vận động Thành Phố", icon: "🏟️", x: 540, y: 130 },
     { name: "Thư viện Trung tâm", icon: "📚", x: 240, y: 240 },
     { name: "Công viên Ánh Sáng", icon: "🌳", x: 490, y: 240 },
     { name: "Khu Chung cư SunHome", icon: "🏘️", x: 90, y: 445 },
     { name: "Bảo tàng Lịch sử", icon: "🏛️", x: 630, y: 450 },
-    { name: "Trạm Cứu hỏa Quận 7", icon: "🚒", x: 90, y: 30 }
+    { name: "Nhà máy KCN Tân Thuận", icon: "🏭", x: 90, y: 30 }
 ];
 
 const iconSize = 50;
