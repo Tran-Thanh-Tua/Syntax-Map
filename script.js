@@ -108,7 +108,7 @@ for (let bus in busRoutes) {
     addEdge("S29", "S30", 5);
 }
 const buildings = [
-    { name: "Bệnh viện Quận 7", icon: "🏥", x: 330, y: 140 },
+    { name: "Bệnh viện Quận 7", icon: "🏥", x: 325, y: 135 },
     { name: "Trường THPT Nguyễn Trãi", icon: "🏫", x: 510, y: 325 },
     { name: "Ngân hàng ACB", icon: "🏦", x: 60, y: 350 },
     { name: "Tòa nhà Văn phòng CityView", icon: "🏢", x: 380, y: 450 },
@@ -119,7 +119,7 @@ const buildings = [
     { name: "Công viên Ánh Sáng", icon: "🌳", x: 490, y: 240 },
     { name: "Khu Chung cư SunHome", icon: "🏘️", x: 90, y: 445 },
     { name: "Bảo tàng Lịch sử", icon: "🏛️", x: 630, y: 450 },
-    { name: "Nhà máy KCN Tân Thuận", icon: "🏭", x: 90, y: 30 }
+    { name: "Nhà máy KCN Tân Thuận", icon: "🏭", x: 90, y: 25 }
 ];
 
 const iconSize = 50;
@@ -131,7 +131,7 @@ let hoverNode = null;
 let selectedNodes = [];
 let activeBus = null;
 let highlightedShortest = []; // nodes in current shortest path
-
+const popup = document.getElementById("popup");
 // ------------------ Offsets for centering ------------------
 let offsetX = 0, offsetY = 0;
 const NODE_RADIUS = 20;
@@ -177,8 +177,8 @@ function drawGraph() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.restore();
     for (let b of buildings) {
-        ctx.fillText(b.icon, b.x - 14, b.y + 10);
         ctx.font = "28px Arial";
+        ctx.fillText(b.icon, b.x - 14, b.y + 10);
     }
     // Draw edges once (avoid duplicates)
     const drawn = new Set();
@@ -414,6 +414,25 @@ function getNodeAtCanvasXY(mx, my) {
     }
     return null;
 }
+function showPopup(b) {
+    const popup = document.getElementById("popup");
+    const popupContent = document.getElementById("popupContent");
+
+    // Nội dung popup
+    popupContent.innerText = b.name; // b.name = "Bệnh viện Quận 7"
+
+    // Vị trí (b.x, b.y) là vị trí icon trên canvas
+    const canvasRect = canvas.getBoundingClientRect();
+
+    popup.style.left = ( b.x + 370) + "px";
+    popup.style.top = (b.y + 30) + "px";
+
+    popup.classList.remove("hidden");
+}
+function hidePopup() {
+    document.getElementById("popup").classList.add("hidden");
+}
+
 
 canvas.addEventListener("mousemove", (ev) => {
     const r = canvas.getBoundingClientRect();
@@ -498,18 +517,18 @@ console.log("Demo bus-network (30 nodes) ready.");
 // ===== CLICK VÀO ICON CÔNG TRÌNH =====
 canvas.addEventListener("click", function (e) {
     const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
 
     for (let b of buildings) {
-        if (
-            x >= b.x - iconSize / 2 &&
-            x <= b.x + iconSize / 2 &&
-            y >= b.y - iconSize / 2 &&
-            y <= b.y + iconSize / 2
-        ) {
-            alert("📍 " + b.name);
+        let dx = mx - b.x;
+        let dy = my - b.y;
+        if (dx * dx + dy * dy < 30 * 30) {   // click vào icon
+
+            showPopup(b);
             return;
         }
     }
+
+    hidePopup();
 });
