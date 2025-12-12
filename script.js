@@ -1,4 +1,4 @@
-// CORE SETUP
+// thiet lap chung
 const canvas = document.getElementById("graphCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -7,7 +7,7 @@ const shortestEl = document.getElementById("shortestPath");
 const busSuggestTitle = document.getElementById("busSuggestTitle");
 const busSuggestEl = document.getElementById("busSuggest");
 
-// BUS STOP
+// tram xe buyt
 const positions = {
     S01: { x: 60, y: 60 }, S02: { x: 180, y: 60 }, S03: { x: 320, y: 60 }, S04: { x: 480, y: 60 }, S05: { x: 620, y: 60 }, S06: { x: 760, y: 60 },
     S07: { x: 60, y: 160 }, S08: { x: 180, y: 160 }, S09: { x: 320, y: 160 }, S10: { x: 480, y: 160 }, S11: { x: 620, y: 160 }, S12: { x: 760, y: 160 },
@@ -16,7 +16,7 @@ const positions = {
     S25: { x: 60, y: 480 }, S26: { x: 180, y: 480 }, S27: { x: 320, y: 480 }, S28: { x: 480, y: 480 }, S29: { x: 620, y: 480 }, S30: { x: 760, y: 480 }
 };
 
-// BUS ROUTES
+// tuyen xe buyt
 const busRoutes = {
     1: ["S01", "S07", "S13", "S19", "S20", "S21", "S27"],
     2: ["S02", "S08", "S14", "S20", "S21", "S22", "S23", "S24"],
@@ -30,7 +30,7 @@ const busRoutes = {
     10: ["S26", "S20", "S14", "S08", "S02", "S03", "S04", "S10", "S11", "S12"]
 };
 
-// BUILD GRAPH
+// Ban do dang do thi vo huong co trong so
 const graph = {};
 function addEdge(a, b, w) {
     if (!graph[a]) graph[a] = [];
@@ -43,7 +43,7 @@ for (let bus in busRoutes) {
     const r = busRoutes[bus];
 
     // trong so giua 2 hang
-    // row 1 - 2
+    // 1 - 2
     addEdge("S01", "S07", 3);
     addEdge("S02", "S08", 5);
     addEdge("S03", "S09", 3);
@@ -51,7 +51,7 @@ for (let bus in busRoutes) {
     addEdge("S05", "S11", 9);
     addEdge("S06", "S12", 8);
 
-    // row 2 - 3
+    // 2 - 3
     addEdge("S07", "S13", 7);
     addEdge("S08", "S14", 3);
     addEdge("S09", "S15", 5);
@@ -59,13 +59,13 @@ for (let bus in busRoutes) {
     addEdge("S11", "S17", 1);
     addEdge("S12", "S18", 5);
 
-    // row 3 - 4
+    // 3 - 4
     addEdge("S13", "S19", 8);
     addEdge("S14", "S20", 7);
     addEdge("S17", "S23", 2);
     addEdge("S18", "S24", 4);
 
-    // row 4 - 5
+    // 4 - 5
     addEdge("S20", "S26", 4);
     addEdge("S21", "S27", 3);
     addEdge("S22", "S28", 8);
@@ -73,37 +73,38 @@ for (let bus in busRoutes) {
     addEdge("S24", "S30", 8);
 
     // trong so giua 2 dinh trong 1 hang
-    // row 1
+    // 1
     addEdge("S02", "S03", 7);
     addEdge("S03", "S04", 5);
     addEdge("S04", "S05", 8);
 
-    // row 2
+    // 2
     addEdge("S08", "S09", 7);
     addEdge("S09", "S10", 4);
     addEdge("S10", "S11", 6);
     addEdge("S11", "S12", 3);
 
-    // row 3
+    // 3
     addEdge("S13", "S14", 4);
     addEdge("S14", "S15", 5);
     addEdge("S15", "S16", 2);
     addEdge("S17", "S18", 2);
 
-    // row 4
+    // 4
     addEdge("S19", "S20", 2);
     addEdge("S20", "S21", 3);
     addEdge("S21", "S22", 2);
     addEdge("S22", "S23", 4);
     addEdge("S23", "S24", 7);
 
-    // row 5
+    // 5
     addEdge("S25", "S26", 2);
     addEdge("S26", "S27", 1);
-    //addEdge("S27", "S28", 8);
     addEdge("S28", "S29", 6);
     addEdge("S29", "S30", 5);
 }
+
+// dia diem
 const buildings = [
     { name: "Bệnh viện Quận 7", icon: "🏥", x: 325, y: 135 },
     { name: "Trường THPT Nguyễn Trãi", icon: "🏫", x: 510, y: 325 },
@@ -123,7 +124,7 @@ const iconSize = 50;
 
 for (let id in positions) if (!graph[id]) graph[id] = [];
 
-// UI STATE
+// tuong tac nguoi dung
 let hoverNode = null;
 let selectedNodes = [];
 let activeBus = null;
@@ -194,7 +195,7 @@ function drawGraph() {
             const ux = dx / len;
             const uy = dy / len;
 
-            // trong so giua canh
+            // trong so nam giua canh
             const cut = 12;
             const m1x = mx - ux * cut;
             const m1y = my - uy * cut;
@@ -211,12 +212,11 @@ function drawGraph() {
             ctx.moveTo(m2x, m2y);
             ctx.lineTo(b.x, b.y);
             ctx.stroke();
-            ctx.fillText(e.w, mx, my);
-   
+            ctx.fillText(e.w, mx, my); 
         }
     }
 
-    // ve tuyen xe buyt hoat dong
+    // highlight tuyen xe buyt hoat dong
     if (activeBus) {
         const route = busRoutes[activeBus];
         ctx.lineWidth = 5;
@@ -232,7 +232,7 @@ function drawGraph() {
         ctx.stroke();
     }
 
-    // ve duong ngan nhat
+    // highlight duong di ngan nhat
     if (highlightedShortest && highlightedShortest.length > 1) {
         ctx.lineWidth = 4;
         ctx.strokeStyle = "#34c3ff";
@@ -247,7 +247,7 @@ function drawGraph() {
         ctx.stroke();
     }
 
-    // ve tram
+    // highlight tram
     for (let id in positions) {
         const p = getPos(id);
         const isSelected = selectedNodes.includes(id);
@@ -312,7 +312,7 @@ function dijkstra(start, end) {
     return { path, distance: dist[end] };
 }
 
-// BUS SUGGESTION
+// ham goi y tuyen
 function suggestBusesForPath(path) {
     if (!path || path.length < 2) return [];
     const suggestions = [];
@@ -395,7 +395,7 @@ function getNodeAtCanvasXY(mx, my) {
     return null;
 }
 
-// popup dia diem
+// hien thi dia diem
 function showPopup(b) {
     const popup = document.getElementById("popup");
     const popupContent = document.getElementById("popupContent");
@@ -454,7 +454,7 @@ canvas.addEventListener("click", (ev) => {
         return;
     }
 
-    // chon 2 tram - chay thuat toan
+    // chon 2 tram -> chay thuat toan
     const a = selectedNodes[0];
     const b = selectedNodes[1];
     const res = dijkstra(a, b);
@@ -490,11 +490,11 @@ canvas.addEventListener("click", (ev) => {
     drawGraph();
 });
 
-// Init
+// hien thi danh sach va ban do
 buildBusList();
 drawGraph();
-console.log("Demo bus-network (30 nodes) ready.");
-// XEM DIA DIEM
+
+// hien dia diem
 canvas.addEventListener("click", function (e) {
     const rect = canvas.getBoundingClientRect();
     const mx = e.clientX - rect.left;
@@ -503,8 +503,7 @@ canvas.addEventListener("click", function (e) {
     for (let b of buildings) {
         let dx = mx - b.x;
         let dy = my - b.y;
-        if (dx * dx + dy * dy < 30 * 30) {   // click icon
-
+        if (dx * dx + dy * dy < 30 * 30) {
             showPopup(b);
             return;
         }
