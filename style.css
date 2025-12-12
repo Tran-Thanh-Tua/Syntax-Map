@@ -1,5 +1,5 @@
 :root{
-  --sidebar-w: 360px; /* kich thuc danh sach tuyen */
+  --sidebar-w: 360px;
   --bg: #4fa867;
   --panel: #171717;
   --accent: #ff3b30;
@@ -115,3 +115,4 @@ main#main{
 
 #infoPanel ul{margin-top:6px}
 #infoPanel li{margin:4px 0}
+
