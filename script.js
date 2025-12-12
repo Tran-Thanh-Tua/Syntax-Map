@@ -270,7 +270,7 @@ function drawGraph() {
     }
 }
 
-// DIJKSTRA (min-heap)
+// dijkstra (min-heap)
 class MinHeap {
     constructor() { this.arr = [] }
     push(node, dist) { this.arr.push({ node, dist }); let i = this.arr.length - 1; while (i > 0) { let p = (i - 1) >> 1; if (this.arr[p].dist <= this.arr[i].dist) break;[this.arr[p], this.arr[i]] = [this.arr[i], this.arr[p]]; i = p; } }
@@ -365,7 +365,7 @@ function suggestBusesForPath(path) {
     return compressed;
 }
 
-// tuong tac voi bus list
+// tuong tac voi danh sach tuyen
 function buildBusList() {
     busListEl.innerHTML = "";
     for (const id in busRoutes) {
@@ -382,6 +382,7 @@ function buildBusList() {
         busListEl.appendChild(li);
     }
 }
+
 function clearActiveList() {
     Array.from(busListEl.children).forEach(x => x.classList.remove("active"));
 }
@@ -409,11 +410,12 @@ function showPopup(b) {
 
     popup.classList.remove("hidden");
 }
+
 function hidePopup() {
     document.getElementById("popup").classList.add("hidden");
 }
 
-
+// chon node
 canvas.addEventListener("mousemove", (ev) => {
     const r = canvas.getBoundingClientRect();
     const mx = ev.clientX - r.left;
@@ -432,7 +434,6 @@ canvas.addEventListener("click", (ev) => {
     const clickedNode = getNodeAtCanvasXY(mx, my);
     if (!clickedNode) return;
 
-    // chon node
     if (selectedNodes.length === 0) {
         selectedNodes = [clickedNode];
     }
@@ -511,4 +512,3 @@ canvas.addEventListener("click", function (e) {
 
     hidePopup();
 });
-
