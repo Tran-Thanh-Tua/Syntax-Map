@@ -110,7 +110,7 @@ const buildings = [
     { name: "Trường THPT Nguyễn Trãi", icon: "🏫", x: 510, y: 325 },
     { name: "Ngân hàng ACB", icon: "🏦", x: 60, y: 350 },
     { name: "Tòa nhà Văn phòng CityView", icon: "🏢", x: 380, y: 450 },
-    { name: "Trạm Cứu hỏa Quận 7", icon: "🚒", x: 620, y: 230 },
+    { name: "Trạm Cứu hỏa Quận 7", icon: "🚒", x: 625, y: 235 },
     { name: "Siêu thị BigMart", icon: "🛒", x: 685, y: 340 },
     { name: "Sân vận động Thành Phố", icon: "🏟️", x: 540, y: 130 },
     { name: "Thư viện Trung tâm", icon: "📚", x: 240, y: 240 },
@@ -511,3 +511,4 @@ canvas.addEventListener("click", function (e) {
 
     hidePopup();
 });
+
