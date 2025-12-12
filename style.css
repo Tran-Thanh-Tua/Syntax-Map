@@ -1,5 +1,5 @@
 :root{
-  --sidebar-w: 360px; /* kich thuc sidebar */
+  --sidebar-w: 360px; /* kich thuc danh sach tuyen */
   --bg: #4fa867;
   --panel: #171717;
   --accent: #ff3b30;
@@ -16,13 +16,12 @@ html,body{
   color:var(--text)
 }
 
-/* LAYOUT */
 body{
   display:flex;
   flex-direction:row;
 }
 
-/* SIDEBAR */
+/* danh sach tuyen */
 #sidebar{
   width:var(--sidebar-w);
   padding:14px;
@@ -42,7 +41,8 @@ body{
   margin:0 0 12px 0;
 }
 
-#busList li{ /* dieu chinh sidebar */
+/* tuyen */
+#busList li{
   background:#111;
   color:var(--text);
   border:1px solid #333;
@@ -57,7 +57,7 @@ body{
 #busList li:hover{background:#1c1c1d}
 #busList li.active{background:var(--accent); color:#fff; border-color:var(--accent)}
 
-/* MAIN CONTENT */
+/* chung */
 main#main{
   flex:1;
   display:flex;
@@ -66,7 +66,7 @@ main#main{
   padding:20px;
 }
 
-/* GRAPH CANVAS */
+/* khung chua ban do */
 #graphContainer {
     background: #ACE1AF;
     padding: 20px;
@@ -81,9 +81,9 @@ main#main{
   display:block;
 }
 
-/* INFO PANEL */
+/* khung goi y tuyen */
 #infoPanel{
-  width:900px; /* dieu chinh khung goi y */
+  width:900px;
   background:#000000d0;
   margin-top:16px;
   padding:16px;
@@ -96,6 +96,7 @@ main#main{
   font-size:18px;
 }
 
+/* hien thi dia diem */
 #popup {
     position: absolute;
     background: white;
