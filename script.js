@@ -1,4 +1,4 @@
-// ------------------ CORE SETUP ------------------
+// CORE SETUP
 const canvas = document.getElementById("graphCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -7,7 +7,7 @@ const shortestEl = document.getElementById("shortestPath");
 const busSuggestTitle = document.getElementById("busSuggestTitle");
 const busSuggestEl = document.getElementById("busSuggest");
 
-// ------------------ POSITIONS (6 columns x 5 rows layout) ------------------
+// BUS STOP
 const positions = {
     S01: { x: 60, y: 60 }, S02: { x: 180, y: 60 }, S03: { x: 320, y: 60 }, S04: { x: 480, y: 60 }, S05: { x: 620, y: 60 }, S06: { x: 760, y: 60 },
     S07: { x: 60, y: 160 }, S08: { x: 180, y: 160 }, S09: { x: 320, y: 160 }, S10: { x: 480, y: 160 }, S11: { x: 620, y: 160 }, S12: { x: 760, y: 160 },
@@ -16,7 +16,7 @@ const positions = {
     S25: { x: 60, y: 480 }, S26: { x: 180, y: 480 }, S27: { x: 320, y: 480 }, S28: { x: 480, y: 480 }, S29: { x: 620, y: 480 }, S30: { x: 760, y: 480 }
 };
 
-// ------------------ BUS ROUTES (you provided these) ------------------
+// BUS ROUTES
 const busRoutes = {
     1: ["S01", "S07", "S13", "S19", "S20", "S21", "S27"],
     2: ["S02", "S08", "S14", "S20", "S21", "S22", "S23", "S24"],
@@ -30,9 +30,7 @@ const busRoutes = {
     10: ["S26", "S20", "S14", "S08", "S02", "S03", "S04", "S10", "S11", "S12"]
 };
 
-// ------------------ BUILD GRAPH (with real weights previously set in your code) ------------------
-// (Your addEdge weight entries should already be in the script; here we assume graph built earlier.)
-// For safety: rebuild graph edges from routes as undirected edges with some default weights (or real weights injected earlier).
+// BUILD GRAPH
 const graph = {};
 function addEdge(a, b, w) {
     if (!graph[a]) graph[a] = [];
@@ -41,11 +39,11 @@ function addEdge(a, b, w) {
     if (!graph[b].some(e => e.to === a)) graph[b].push({ to: a, w });
 }
 
-// --- If you already had weighted edges defined, keep them here.
-// For now we assume edges were added earlier in the script; if not, we fall back to building from routes with w=1:
 for (let bus in busRoutes) {
     const r = busRoutes[bus];
-    // vertical edges row1→row2
+
+    // trong so giua 2 hang
+    // row 1 - 2
     addEdge("S01", "S07", 3);
     addEdge("S02", "S08", 5);
     addEdge("S03", "S09", 3);
@@ -53,7 +51,7 @@ for (let bus in busRoutes) {
     addEdge("S05", "S11", 9);
     addEdge("S06", "S12", 8);
 
-    // row2→row3
+    // row 2 - 3
     addEdge("S07", "S13", 7);
     addEdge("S08", "S14", 3);
     addEdge("S09", "S15", 5);
@@ -61,21 +59,20 @@ for (let bus in busRoutes) {
     addEdge("S11", "S17", 1);
     addEdge("S12", "S18", 5);
 
-    // row3→row4
+    // row 3 - 4
     addEdge("S13", "S19", 8);
-    addEdge("S14", "S20", 6);
+    addEdge("S14", "S20", 7);
     addEdge("S17", "S23", 2);
     addEdge("S18", "S24", 4);
 
-    // row4→row5
+    // row 4 - 5
     addEdge("S20", "S26", 4);
     addEdge("S21", "S27", 3);
     addEdge("S22", "S28", 8);
     addEdge("S23", "S29", 7);
     addEdge("S24", "S30", 8);
 
-
-    // horizontal rows
+    // trong so giua 2 dinh trong 1 hang
     // row 1
     addEdge("S02", "S03", 7);
     addEdge("S03", "S04", 5);
@@ -96,14 +93,14 @@ for (let bus in busRoutes) {
     // row 4
     addEdge("S19", "S20", 2);
     addEdge("S20", "S21", 3);
-    addEdge("S21", "S22", 8);
-    addEdge("S22", "S23", 9);
+    addEdge("S21", "S22", 2);
+    addEdge("S22", "S23", 4);
     addEdge("S23", "S24", 7);
 
     // row 5
     addEdge("S25", "S26", 2);
     addEdge("S26", "S27", 1);
-    addEdge("S27", "S28", 8);
+    //addEdge("S27", "S28", 8);
     addEdge("S28", "S29", 6);
     addEdge("S29", "S30", 5);
 }
@@ -126,17 +123,15 @@ const iconSize = 50;
 
 for (let id in positions) if (!graph[id]) graph[id] = [];
 
-// ------------------ UI STATE ------------------
+// UI STATE
 let hoverNode = null;
 let selectedNodes = [];
 let activeBus = null;
-let highlightedShortest = []; // nodes in current shortest path
+let highlightedShortest = [];
 const popup = document.getElementById("popup");
-// ------------------ Offsets for centering ------------------
 let offsetX = 0, offsetY = 0;
 const NODE_RADIUS = 20;
 
-// compute offsets so that bounding box of positions is centered inside canvas
 function computeOffsets() {
     let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
     for (const id in positions) {
@@ -148,29 +143,23 @@ function computeOffsets() {
     }
     const contentW = maxX - minX;
     const contentH = maxY - minY;
-    // available inside canvas minus some padding
     const pad = 40;
     offsetX = Math.round((canvas.width - contentW) / 2 - minX);
     offsetY = Math.round((canvas.height - contentH) / 2 - minY);
-    // keep small pad from edges
     offsetX = Math.max(offsetX, pad - minX);
     offsetY = Math.max(offsetY, pad - minY);
 }
 
-// helper to get adjusted position on canvas
 function getPos(id) {
     const p = positions[id];
     return { x: p.x + offsetX, y: p.y + offsetY };
 }
 
-// ------------------ DRAW HELPERS ------------------
 function drawGraph() {
-    // recompute offsets in case canvas size changed
     computeOffsets();
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // background subtle
     ctx.save();
     ctx.globalAlpha = 0.03;
     ctx.fillStyle = "#fff";
@@ -180,7 +169,6 @@ function drawGraph() {
         ctx.font = "28px Arial";
         ctx.fillText(b.icon, b.x - 14, b.y + 10);
     }
-    // Draw edges once (avoid duplicates)
     const drawn = new Set();
     ctx.lineWidth = 2;
     ctx.strokeStyle = "#000000";
@@ -197,44 +185,38 @@ function drawGraph() {
             const a = getPos(u), b = getPos(v);
             if (!a || !b) continue;
 
-            // midpoint
             const mx = (a.x + b.x) / 2;
             const my = (a.y + b.y) / 2;
 
-            // vector unit
             const dx = b.x - a.x;
             const dy = b.y - a.y;
             const len = Math.hypot(dx, dy);
             const ux = dx / len;
             const uy = dy / len;
 
-            // điểm trước midpoint (cách 20px)
-            const cut = 11;
+            // trong so giua canh
+            const cut = 12;
             const m1x = mx - ux * cut;
             const m1y = my - uy * cut;
 
-            // điểm sau midpoint (cách 20px)
             const m2x = mx + ux * cut;
             const m2y = my + uy * cut;
 
-            // vẽ đoạn A → M1
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(m1x, m1y);
             ctx.stroke();
 
-            // vẽ đoạn M2 → B
             ctx.beginPath();
             ctx.moveTo(m2x, m2y);
             ctx.lineTo(b.x, b.y);
             ctx.stroke();
-            // VẼ TRỌNG SỐ VÀO MIDPOINT
-            ctx.fillText(e.w, mx, my - 5);
+            ctx.fillText(e.w, mx, my);
    
         }
     }
 
-    // draw active bus route (red)
+    // ve tuyen xe buyt hoat dong
     if (activeBus) {
         const route = busRoutes[activeBus];
         ctx.lineWidth = 5;
@@ -250,7 +232,7 @@ function drawGraph() {
         ctx.stroke();
     }
 
-    // draw shortest path (blue)
+    // ve duong ngan nhat
     if (highlightedShortest && highlightedShortest.length > 1) {
         ctx.lineWidth = 4;
         ctx.strokeStyle = "#34c3ff";
@@ -265,7 +247,7 @@ function drawGraph() {
         ctx.stroke();
     }
 
-    // Draw nodes
+    // ve tram
     for (let id in positions) {
         const p = getPos(id);
         const isSelected = selectedNodes.includes(id);
@@ -288,7 +270,7 @@ function drawGraph() {
     }
 }
 
-// ------------------ DIJKSTRA (min-heap) ------------------
+// DIJKSTRA (min-heap)
 class MinHeap {
     constructor() { this.arr = [] }
     push(node, dist) { this.arr.push({ node, dist }); let i = this.arr.length - 1; while (i > 0) { let p = (i - 1) >> 1; if (this.arr[p].dist <= this.arr[i].dist) break;[this.arr[p], this.arr[i]] = [this.arr[i], this.arr[p]]; i = p; } }
@@ -330,7 +312,7 @@ function dijkstra(start, end) {
     return { path, distance: dist[end] };
 }
 
-// ------------------ BUS SUGGESTION ------------------
+// BUS SUGGESTION
 function suggestBusesForPath(path) {
     if (!path || path.length < 2) return [];
     const suggestions = [];
@@ -383,7 +365,7 @@ function suggestBusesForPath(path) {
     return compressed;
 }
 
-// ------------------ UI: build bus list ------------------
+// tuong tac voi bus list
 function buildBusList() {
     busListEl.innerHTML = "";
     for (const id in busRoutes) {
@@ -404,8 +386,6 @@ function clearActiveList() {
     Array.from(busListEl.children).forEach(x => x.classList.remove("active"));
 }
 
-// ------------------ INTERACTION: hover + click on nodes ------------------
-// compute offsets first so hit-testing uses same coordinates as draw
 function getNodeAtCanvasXY(mx, my) {
     computeOffsets();
     for (const id in positions) {
@@ -414,14 +394,14 @@ function getNodeAtCanvasXY(mx, my) {
     }
     return null;
 }
+
+// popup dia diem
 function showPopup(b) {
     const popup = document.getElementById("popup");
     const popupContent = document.getElementById("popupContent");
 
-    // Nội dung popup
-    popupContent.innerText = b.name; // b.name = "Bệnh viện Quận 7"
+    popupContent.innerText = b.name;
 
-    // Vị trí (b.x, b.y) là vị trí icon trên canvas
     const canvasRect = canvas.getBoundingClientRect();
 
     popup.style.left = ( b.x + 370) + "px";
@@ -452,7 +432,7 @@ canvas.addEventListener("click", (ev) => {
     const clickedNode = getNodeAtCanvasXY(mx, my);
     if (!clickedNode) return;
 
-    // chọn node
+    // chon node
     if (selectedNodes.length === 0) {
         selectedNodes = [clickedNode];
     }
@@ -464,7 +444,7 @@ canvas.addEventListener("click", (ev) => {
         selectedNodes = [clickedNode];
     }
 
-    // luôn clear gợi ý khi chưa đủ 2 trạm
+    // clear goi y khi chua chon 2 tram
     if (selectedNodes.length < 2) {
         highlightedShortest = [];
         shortestEl.textContent = "";
@@ -474,7 +454,7 @@ canvas.addEventListener("click", (ev) => {
         return;
     }
 
-    // đủ 2 trạm → chạy dijkstra
+    // chon 2 tram - chay thuat toan
     const a = selectedNodes[0];
     const b = selectedNodes[1];
     const res = dijkstra(a, b);
@@ -488,12 +468,12 @@ canvas.addEventListener("click", (ev) => {
         return;
     }
 
-    // cập nhật thông tin đường đi
+    // thong tin duong di
     highlightedShortest = res.path;
     shortestEl.textContent =
         `Đường ngắn nhất: ${res.path.join(" → ")} (độ dài ${res.distance})`;
 
-    // gợi ý tuyến xe
+    // goi y tuyen xe
     const segs = suggestBusesForPath(res.path);
     busSuggestTitle.textContent = "Gợi ý bắt xe:";
     busSuggestEl.innerHTML = "";
@@ -510,11 +490,11 @@ canvas.addEventListener("click", (ev) => {
     drawGraph();
 });
 
-// ------------------ Init ------------------
+// Init
 buildBusList();
 drawGraph();
 console.log("Demo bus-network (30 nodes) ready.");
-// ===== CLICK VÀO ICON CÔNG TRÌNH =====
+// XEM DIA DIEM
 canvas.addEventListener("click", function (e) {
     const rect = canvas.getBoundingClientRect();
     const mx = e.clientX - rect.left;
@@ -523,7 +503,7 @@ canvas.addEventListener("click", function (e) {
     for (let b of buildings) {
         let dx = mx - b.x;
         let dy = my - b.y;
-        if (dx * dx + dy * dy < 30 * 30) {   // click vào icon
+        if (dx * dx + dy * dy < 30 * 30) {   // click icon
 
             showPopup(b);
             return;
