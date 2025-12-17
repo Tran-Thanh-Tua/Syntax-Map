@@ -1,4 +1,4 @@
-// thiet lap chung
+// thiet lap ban dau
 const canvas = document.getElementById("graphCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -512,3 +512,4 @@ canvas.addEventListener("click", function (e) {
 
     hidePopup();
 });
+
