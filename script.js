@@ -472,18 +472,18 @@ canvas.addEventListener("click", (ev) => {
     // thong tin duong di
     highlightedShortest = res.path;
     shortestEl.textContent =
-        `Đường đi: ${res.path.join(" → ")} (độ dài ${res.distance} km)`;
+        `Đường đi: ${res.path.join(" -> ")} (${res.distance} km)`;
 
     // goi y tuyen xe
     const segs = suggestBusesForPath(res.path);
-    busSuggestTitle.textContent = "Gợi ý tuyến:";
+    busSuggestTitle.textContent = "Gợi ý bắt tuyến:";
     busSuggestEl.innerHTML = "";
     for (const s of segs) {
         const li = document.createElement("li");
         if (s.bus) {
-            li.textContent = `Tuyến ${s.bus}: ${s.from} → ${s.to}`;
+            li.textContent = `Tuyến ${s.bus}: ${s.from} -> ${s.to}`;
         } else {
-            li.textContent = `Không có tuyến trực tiếp: ${s.from} → ${s.to}`;
+            li.textContent = `Không có tuyến trực tiếp: ${s.from} -> ${s.to}`;
         }
         busSuggestEl.appendChild(li);
     }
