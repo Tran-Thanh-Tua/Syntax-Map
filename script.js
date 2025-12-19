@@ -1,4 +1,4 @@
-// thiet lap ban dau
+// thiet lap chung
 const canvas = document.getElementById("graphCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -472,11 +472,11 @@ canvas.addEventListener("click", (ev) => {
     // thong tin duong di
     highlightedShortest = res.path;
     shortestEl.textContent =
-        `Đường ngắn nhất: ${res.path.join(" → ")} (độ dài ${res.distance})`;
+        `Đường đi: ${res.path.join(" → ")} (độ dài ${res.distance} km)`;
 
     // goi y tuyen xe
     const segs = suggestBusesForPath(res.path);
-    busSuggestTitle.textContent = "Gợi ý bắt xe:";
+    busSuggestTitle.textContent = "Gợi ý tuyến:";
     busSuggestEl.innerHTML = "";
     for (const s of segs) {
         const li = document.createElement("li");
@@ -512,4 +512,3 @@ canvas.addEventListener("click", function (e) {
 
     hidePopup();
 });
-
