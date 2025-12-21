@@ -273,8 +273,35 @@ function drawGraph() {
 // dijkstra (min-heap)
 class MinHeap {
     constructor() { this.arr = [] }
-    push(node, dist) { this.arr.push({ node, dist }); let i = this.arr.length - 1; while (i > 0) { let p = (i - 1) >> 1; if (this.arr[p].dist <= this.arr[i].dist) break;[this.arr[p], this.arr[i]] = [this.arr[i], this.arr[p]]; i = p; } }
-    pop() { if (this.arr.length === 0) return null; const top = this.arr[0]; const end = this.arr.pop(); if (this.arr.length > 0) { this.arr[0] = end; let i = 0; while (true) { let L = 2 * i + 1, R = 2 * i + 2, S = i; if (L < this.arr.length && this.arr[L].dist < this.arr[S].dist) S = L; if (R < this.arr.length && this.arr[R].dist < this.arr[S].dist) S = R; if (S === i) break;[this.arr[i], this.arr[S]] = [this.arr[S], this.arr[i]]; i = S; } } return top; }
+    push(node, dist) {
+        this.arr.push({ node, dist });
+        let i = this.arr.length - 1;
+
+        while (i > 0) {
+            let p = (i - 1) >> 1;
+            if (this.arr[p].dist <= this.arr[i].dist) break;
+            [this.arr[p], this.arr[i]] = [this.arr[i], this.arr[p]];
+            i = p;
+        }
+    }
+    pop() {
+        const top = this.arr[0];
+        const end = this.arr.pop();
+
+        if (this.arr.length > 0) {
+            this.arr[0] = end;
+            let i = 0;
+            while (true) {
+                let L = 2 * i + 1, R = 2 * i + 2, S = i;
+                if (L < this.arr.length && this.arr[L].dist < this.arr[S].dist) S = L;
+                if (R < this.arr.length && this.arr[R].dist < this.arr[S].dist) S = R;
+                if (S === i) break;
+                [this.arr[i], this.arr[S]] = [this.arr[S], this.arr[i]];
+                i = S;
+            }
+        }
+        return top;
+    }
     isEmpty() { return this.arr.length === 0 }
 }
 
@@ -471,8 +498,7 @@ canvas.addEventListener("click", (ev) => {
 
     // thong tin duong di
     highlightedShortest = res.path;
-    shortestEl.textContent =
-        `Đường đi: ${res.path.join(" -> ")} (${res.distance} km)`;
+    shortestEl.textContent = `Đường đi: ${res.path.join(" -> ")} (${res.distance} km)`;
 
     // goi y tuyen xe
     const segs = suggestBusesForPath(res.path);
